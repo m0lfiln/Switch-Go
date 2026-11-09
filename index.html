@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Switch &amp; Go — конвертер файлов онлайн</title>
+  <meta name="description" content="Конвертируйте документы и изображения онлайн без регистрации. Файлы не покидают ваше устройство.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <a class="byline" href="https://github.com/m0lfiln" target="_blank" rel="noopener noreferrer">by m0lfiln</a>
+      <span class="brand-name">Switch &amp; Go</span>
+    </div>
+    <button class="lang-btn" id="lang" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
+      <span id="lang-code">EN</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="converter" aria-labelledby="title">
+      <h1 id="title" data-i18n="title">Конвертируйте файлы онлайн</h1>
+      <p class="lead" data-i18n="lead">Загрузите файл и выберите нужный формат</p>
+
+      <div class="panel" id="panel" data-state="idle">
+        <!-- 1. Выбор файла -->
+        <div class="step" id="step-pick">
+          <label class="dropzone" id="dropzone" for="file-input">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+            <span class="dz-title" data-i18n="dzTitle">Перетащите файл сюда</span>
+            <span class="dz-sub" id="limit-hint"></span>
+            <span class="btn btn-primary" data-i18n="chooseFile">Выбрать файл</span>
+          </label>
+          <input type="file" id="file-input" hidden>
+        </div>
+
+        <!-- 2. Файл выбран -->
+        <div class="step" id="step-ready" hidden>
+          <div class="file-row">
+            <span class="file-ext" id="file-ext">PDF</span>
+            <div class="file-meta">
+              <div class="file-name" id="file-name"></div>
+              <div class="file-size" id="file-size"></div>
+            </div>
+            <button class="icon-btn" id="remove" type="button" data-i18n-aria="removeFile" aria-label="Удалить файл">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+
+          <div class="route" aria-live="polite">
+            <span class="tag" id="from-tag">PDF</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
+            <span class="tag tag-to" id="to-tag">—</span>
+          </div>
+
+          <fieldset class="targets">
+            <legend data-i18n="convertTo">Конвертировать в</legend>
+            <div class="target-list" id="targets"></div>
+          </fieldset>
+
+          <p class="hint note" id="note" hidden></p>
+          <button class="btn btn-primary btn-lg" id="convert" type="button" disabled data-i18n="convert">Конвертировать</button>
+        </div>
+
+        <!-- 3. Идёт обработка -->
+        <div class="step" id="step-busy" hidden>
+          <div class="busy-title" id="busy-title" data-i18n="busyTitle">Конвертируем…</div>
+          <div class="bar is-indeterminate" id="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><span id="bar-fill"></span></div>
+          <p class="hint" id="busy-hint" data-i18n="busyHint">Файл обрабатывается в вашем браузере. Не закрывайте страницу.</p>
+        </div>
+
+        <!-- 4. Готово -->
+        <div class="step" id="step-done" hidden>
+          <div class="done-mark">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+            <span data-i18n="done">Файл готов</span>
+          </div>
+          <div class="result-name" id="result-name"></div>
+          <a class="btn btn-primary btn-lg" id="download" href="#" download data-i18n="download">Скачать файл</a>
+          <button class="btn btn-link" id="again" type="button" data-i18n="again">Конвертировать другой файл</button>
+          <p class="hint" data-i18n="doneHint">Файл создан на вашем устройстве и никуда не отправлялся.</p>
+        </div>
+
+        <!-- Ошибка -->
+        <div class="error" id="error" role="alert" hidden></div>
+      </div>
+    </section>
+
+    <section class="block" id="how" aria-labelledby="how-h">
+      <h2 id="how-h" data-i18n="howTitle">Как это работает</h2>
+      <ol class="steps">
+        <li data-i18n-html="how1"><strong>Загрузите файл.</strong> Формат определится автоматически.</li>
+        <li data-i18n-html="how2"><strong>Выберите нужный формат.</strong> Показываются только доступные варианты.</li>
+        <li data-i18n-html="how3"><strong>Скачайте результат.</strong> Всё происходит в вашем браузере.</li>
+      </ol>
+    </section>
+
+    <section class="block" id="about" aria-labelledby="about-h">
+      <h2 id="about-h" data-i18n="aboutTitle">О сервисе</h2>
+      <ul class="facts">
+        <li data-i18n-html="about1"><strong>Без регистрации и установки.</strong> Откройте страницу и конвертируйте.</li>
+        <li data-i18n-html="about2"><strong>Файлы не покидают ваше устройство.</strong> Конвертация идёт прямо в браузере, на сервер ничего не загружается.</li>
+        <li data-i18n-html="about3"><strong>Нужен интернет.</strong> Для некоторых форматов браузер один раз подгружает нужный модуль.</li>
+        <li data-i18n-html="about4"><strong>Документы переносятся упрощённо.</strong> Из PDF и в PDF/DOCX переходит текст, без сложного оформления.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
